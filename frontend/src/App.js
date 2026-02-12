@@ -16,6 +16,18 @@ const HeroInput = ({ onSearch, loading }) => {
     onSearch(url);
   };
 
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        setUrl(text);
+        toast.success("Pasted from clipboard");
+      }
+    } catch (err) {
+      toast.error("Failed to read clipboard");
+    }
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto mb-20 relative z-10">
       <form onSubmit={handleSubmit} className="relative group">
@@ -25,10 +37,22 @@ const HeroInput = ({ onSearch, loading }) => {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="PASTE YOUTUBE URL HERE"
-          className="w-full bg-transparent border-b-2 border-white/20 focus:border-primary text-2xl md:text-5xl py-8 px-0 rounded-none placeholder:text-white/20 transition-all duration-300 focus:outline-none font-heading uppercase tracking-tight data-[filled=true]:border-white"
+          className="w-full bg-transparent border-b-2 border-white/20 focus:border-primary text-2xl md:text-5xl py-8 px-0 pr-20 rounded-none placeholder:text-white/20 transition-all duration-300 focus:outline-none font-heading uppercase tracking-tight data-[filled=true]:border-white"
           data-testid="url-input"
           data-filled={url.length > 0}
         />
+        
+        {/* Paste Button (Visible when empty) */}
+        {!url && (
+            <button
+                type="button"
+                onClick={handlePaste}
+                className="absolute right-16 top-1/2 -translate-y-1/2 text-xs font-mono uppercase tracking-widest text-primary border border-primary/30 px-3 py-1 hover:bg-primary hover:text-white transition-all hidden md:block"
+            >
+                Paste
+            </button>
+        )}
+
         <button
           type="submit"
           disabled={loading}
