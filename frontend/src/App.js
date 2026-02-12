@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Download, Youtube, ArrowRight, Image as ImageIcon, AlertTriangle } from "lucide-react";
+import { Search, Download, Youtube, ArrowRight, Image as ImageIcon, AlertTriangle, Clipboard } from "lucide-react";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
 
