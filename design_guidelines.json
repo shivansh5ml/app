@@ -1,0 +1,144 @@
+{
+  "identity": {
+    "persona": "E1: The Anti-AI Designer",
+    "mission": "Create a raw, functional, and aesthetically striking utility tool that breaks the 'boring converter' mold.",
+    "principles": [
+      "Fusion over Imitation: Mix Swiss Brutalism with Cyber-Utility.",
+      "Emotion First: The user should feel like a 'Pro' using a 'Studio Tool', not a generic downloader.",
+      "Content is King: The Thumbnail is the hero. Everything else frames it.",
+      "Contrast: High contrast (Black/White/Red). No muddy greys."
+    ]
+  },
+  "theme": {
+    "mode": "dark",
+    "strategy": "The 'Darkroom' Aesthetic. Deep blacks, stark whites, and electric red accents. Focus on the content (the image)."
+  },
+  "typography": {
+    "primary_font": "Syne",
+    "secondary_font": "Manrope",
+    "scale": {
+      "h1": "text-6xl md:text-8xl font-bold tracking-tighter uppercase",
+      "h2": "text-4xl md:text-5xl font-bold tracking-tight",
+      "h3": "text-2xl md:text-3xl font-semibold",
+      "body": "text-base md:text-lg font-medium tracking-wide",
+      "label": "text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground"
+    },
+    "imports": [
+      "https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Manrope:wght@400;500;700&display=swap"
+    ]
+  },
+  "colors": {
+    "palette": {
+      "background": "#050505",
+      "foreground": "#FFFFFF",
+      "primary": "#FF3B30",
+      "primary_foreground": "#FFFFFF",
+      "secondary": "#1A1A1A",
+      "secondary_foreground": "#FFFFFF",
+      "accent": "#FF3B30",
+      "border": "#333333",
+      "muted": "#888888"
+    },
+    "usage": {
+      "background": "bg-[#050505]",
+      "text_main": "text-white",
+      "text_muted": "text-[#888888]",
+      "border_subtle": "border-[#333333]",
+      "accent_glow": "shadow-[0_0_30px_-5px_rgba(255,59,48,0.3)]"
+    }
+  },
+  "layout": {
+    "grid_system": "The 'Bento' Grid (Mode A for Marketing, Mode B for Results)",
+    "spacing": "Generous. Use p-8 to p-12 for containers. Gap-6 for grids.",
+    "container": "max-w-7xl mx-auto px-4 md:px-8",
+    "z_index": {
+      "base": "z-0",
+      "overlay": "z-10",
+      "modal": "z-50",
+      "toast": "z-100"
+    }
+  },
+  "components": {
+    "input_field": {
+      "style": "Massive, border-only, no background. Text size xl or 2xl.",
+      "classes": "bg-transparent border-b-2 border-white/20 focus:border-[#FF3B30] text-2xl md:text-4xl py-8 px-0 rounded-none placeholder:text-white/20 transition-colors duration-300 focus:outline-none focus:ring-0 font-['Syne']"
+    },
+    "button_primary": {
+      "style": "Sharp edges, solid fill or thick border. Hover = invert or glow.",
+      "classes": "bg-[#FF3B30] text-white hover:bg-[#FF0000] rounded-none px-8 py-4 text-lg font-bold uppercase tracking-wider transition-all duration-200 hover:shadow-[4px_4px_0px_0px_#FFFFFF]"
+    },
+    "button_secondary": {
+      "style": "Outline, sharp edges.",
+      "classes": "bg-transparent border border-white/20 text-white hover:bg-white hover:text-black rounded-none px-6 py-3 text-sm font-bold uppercase tracking-wider transition-all duration-200"
+    },
+    "card": {
+      "style": "Wireframe. 1px border. No fill (or very subtle).",
+      "classes": "bg-[#0A0A0A] border border-white/10 p-6 hover:border-[#FF3B30]/50 transition-colors duration-300"
+    },
+    "thumbnail_preview": {
+      "style": "The Hero. Needs to pop.",
+      "classes": "rounded-none border border-white/10 shadow-2xl shadow-black/50 overflow-hidden relative group"
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Add a subtle 'noise' overlay to the background to kill the digital flatness.",
+    "decorations": [
+      "Use 'Ticker' (Marquee) for supported formats.",
+      "Use large outline text (stroke only) for background depth."
+    ],
+    "motion": {
+      "type": "Snap & Smooth",
+      "library": "framer-motion",
+      "transitions": "transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
+    }
+  },
+  "assets": {
+    "icons": "lucide-react (default) or @phosphor-icons/react (bold weight)",
+    "images": [
+      {
+        "category": "hero_graphic",
+        "url": "https://images.unsplash.com/photo-1632931612792-fbaacfd952f6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwxfHx2bG9nJTIwdHJhdmVsJTIweW91dHViZSUyMHRodW1ibmFpbHxlbnwwfHx8fDE3NzA5MDg3NjN8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract Glassy YouTube Icon for Hero Background or Feature Section"
+      },
+      {
+        "category": "feature_graphic",
+        "url": "https://images.unsplash.com/photo-1678329885908-85eb768aa61b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjh8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjB5b3V0dWJlJTIwdGh1bWJuYWlsJTIwdGVjaCUyMHJldmlld3xlbnwwfHx8fDE3NzA5MDg3NTl8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Red Play Button for 'How it Works' or CTA section"
+      }
+    ]
+  },
+  "instructions_to_main_agent": {
+    "general": "Build a 'Swiss Brutalist' utility tool. It should feel like a piece of high-end software, not a cheap converter site.",
+    "layout_rules": [
+      "Do NOT center the main input. Use a grid or offset layout to create tension.",
+      "If you must center (for focus), make the input MASSIVE (screen width).",
+      "Use the 'Bento' grid for displaying the download options (High Res, Medium Res, etc.)."
+    ],
+    "component_overrides": [
+      "Override Shadcn 'Card' to remove rounded corners and soft shadows. Make it sharp.",
+      "Override Shadcn 'Input' to remove the ring and background. Make it a raw underline or box."
+    ],
+    "testing": "Ensure all interactive elements have 'data-testid' attributes."
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. In frontend design, this creates what users call the 'AI slop' aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: 'transition: all'. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add '.App { text-align: center; }' in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use 'sonner' for toasts. Sonner component are located in '/app/src/components/ui/sonner.tsx'"
+  ]
+}
