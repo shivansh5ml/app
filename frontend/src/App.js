@@ -1,238 +1,183 @@
-import React, { useState } from "react";
-import { Search, Download, Youtube, ArrowRight, Image as ImageIcon, AlertTriangle, Clipboard } from "lucide-react";
-import axios from "axios";
-import { Toaster, toast } from "sonner";
+import React from "react";
+import {
+  Globe,
+  Megaphone,
+  PenTool,
+  Music2,
+  PlayCircle,
+  Mail,
+  Phone,
+  MapPin,
+  CheckCircle2,
+  ArrowRight,
+} from "lucide-react";
 
-// Use environment variable for backend URL
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
-const API = `${BACKEND_URL}/api`;
+const services = [
+  {
+    icon: Globe,
+    title: "Website Design & Development",
+    description:
+      "Mobile-first websites for artists, labels, events, and music brands with fast performance and modern UI.",
+  },
+  {
+    icon: Megaphone,
+    title: "Digital Marketing",
+    description:
+      "Result-driven ad campaigns, SEO, and social media strategy to grow audience reach and engagement.",
+  },
+  {
+    icon: PenTool,
+    title: "Brand Identity",
+    description:
+      "Logo, color systems, and visual direction crafted to make your music brand look premium and memorable.",
+  },
+  {
+    icon: Music2,
+    title: "Music Promotion",
+    description:
+      "Targeted release promotion to help tracks and albums reach listeners across digital platforms.",
+  },
+];
 
-const HeroInput = ({ onSearch, loading }) => {
-  const [url, setUrl] = useState("");
+const highlights = [
+  "Creative design inspired by leading studio websites",
+  "Optimized for mobile, speed, and search visibility",
+  "Built for artists, studios, and entertainment brands",
+  "Simple maintenance and scalable content structure",
+];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!url.trim()) return;
-    onSearch(url);
-  };
+const stats = [
+  { label: "Projects Delivered", value: "120+" },
+  { label: "Client Satisfaction", value: "98%" },
+  { label: "Marketing Campaigns", value: "300+" },
+  { label: "Avg. Growth in Reach", value: "2.8x" },
+];
 
-  const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (text) {
-        setUrl(text);
-        toast.success("Pasted from clipboard");
-      }
-    } catch (err) {
-      toast.error("Failed to read clipboard");
-    }
-  };
-
-  return (
-    <div className="w-full max-w-5xl mx-auto mb-20 relative z-10">
-      <form onSubmit={handleSubmit} className="relative group">
-        <div className="absolute inset-0 bg-primary/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-        <input
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="PASTE YOUTUBE URL HERE"
-          className="w-full bg-transparent border-b-2 border-white/20 focus:border-primary text-2xl md:text-5xl py-8 px-0 pr-20 rounded-none placeholder:text-white/20 transition-all duration-300 focus:outline-none font-heading uppercase tracking-tight data-[filled=true]:border-white"
-          data-testid="url-input"
-          data-filled={url.length > 0}
-        />
-        
-        {/* Paste Button (Visible when empty) */}
-        {!url && (
-            <button
-                type="button"
-                onClick={handlePaste}
-                className="absolute right-16 top-1/2 -translate-y-1/2 text-xs font-mono uppercase tracking-widest text-primary border border-primary/30 px-3 py-1 hover:bg-primary hover:text-white transition-all hidden md:block"
-            >
-                Paste
-            </button>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-white/50 hover:text-primary transition-colors disabled:opacity-50"
-          data-testid="search-button"
-        >
-          {loading ? (
-            <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full" />
-          ) : (
-            <ArrowRight className="w-12 h-12 md:w-16 md:h-16" />
-          )}
-        </button>
-      </form>
-      <div className="flex items-center gap-4 mt-4 text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">
-        <span>Supported:</span>
-        <span className="text-white">Video</span>
-        <span className="text-white">Shorts</span>
-        <span className="text-white">Embeds</span>
-      </div>
+const ServiceCard = ({ icon: Icon, title, description }) => (
+  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-primary/70 hover:bg-white/[0.06] transition-all duration-300">
+    <div className="mb-4 inline-flex rounded-xl bg-primary/20 p-3">
+      <Icon className="h-6 w-6 text-primary" />
     </div>
-  );
-};
-
-const QualityCard = ({ label, res, url, isHero = false }) => {
-  const handleDownload = async () => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = `yt-thumbnail-${label.toLowerCase()}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
-      toast.success(`Downloaded ${label} quality`);
-    } catch (error) {
-        // Fallback for cross-origin issues if fetch fails directly (though img.youtube usually allows)
-        window.open(url, "_blank");
-        toast.info("Opened in new tab (Download manually)");
-    }
-  };
-
-  return (
-    <div 
-      className={`group relative bg-[#0A0A0A] border border-white/10 overflow-hidden hover:border-primary/50 transition-all duration-300 ${isHero ? 'col-span-1 md:col-span-2 row-span-2' : ''}`}
-      data-testid={`quality-card-${label}`}
-    >
-      <div className="absolute top-0 left-0 p-4 z-10 flex flex-col gap-1">
-        <span className="bg-primary text-white text-xs font-bold px-2 py-1 uppercase tracking-wider">{label}</span>
-        <span className="text-xs font-mono text-white/60">{res}</span>
-      </div>
-
-      <div className="w-full h-full aspect-video relative overflow-hidden">
-        <img 
-          src={url} 
-          alt={`${label} Thumbnail`} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <button
-                onClick={handleDownload}
-                className="bg-white text-black px-6 py-3 font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors duration-200 flex items-center gap-2"
-                data-testid={`download-btn-${label}`}
-            >
-                <Download className="w-4 h-4" />
-                Download
-            </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Footer = () => (
-  <footer className="border-t border-white/10 mt-20 py-12">
-    <div className="container mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-      <div className="flex items-center gap-2">
-        <Youtube className="w-6 h-6 text-primary" />
-        <span className="font-heading font-bold text-lg tracking-tight">YT GRABBER</span>
-      </div>
-      <p className="text-muted-foreground text-xs font-mono uppercase tracking-widest text-center md:text-right">
-        For Personal Use Only. <br className="hidden md:block"/>Respect Copyrights.
-      </p>
-    </div>
-  </footer>
+    <h3 className="mb-2 text-xl font-bold text-white normal-case tracking-normal">{title}</h3>
+    <p className="text-sm text-muted-foreground leading-relaxed normal-case tracking-normal">{description}</p>
+  </div>
 );
 
 export default function App() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleSearch = async (url) => {
-    setLoading(true);
-    setData(null);
-    try {
-      const response = await axios.post(`${API}/extract`, { url });
-      setData(response.data);
-      toast.success("Thumbnails Extracted");
-    } catch (error) {
-      console.error(error);
-      toast.error("Invalid URL or Extraction Failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-primary selection:text-white">
-      <Toaster position="top-right" theme="dark" toastOptions={{
-        style: { background: '#0A0A0A', border: '1px solid #333', color: '#fff', borderRadius: '0px' }
-      }}/>
-      
-      {/* Header */}
-      <header className="fixed top-0 left-0 w-full z-50 border-b border-white/10 bg-background/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary flex items-center justify-center">
-                    <Youtube className="w-5 h-5 text-white fill-current" />
-                </div>
-                <span className="font-heading font-bold text-xl tracking-tighter">YT GRABBER</span>
+    <div className="min-h-screen text-white selection:bg-primary selection:text-white">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050505]/85 backdrop-blur-lg">
+        <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-8">
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-primary/20 p-2">
+              <PlayCircle className="h-6 w-6 text-primary" />
             </div>
-            <div className="hidden md:flex items-center gap-6">
-                <span className="text-xs font-mono text-muted-foreground">V 1.0</span>
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <div>
+              <p className="text-lg font-bold tracking-tight normal-case">Studio Music World</p>
+              <p className="text-xs text-muted-foreground normal-case tracking-normal">Digital Creative Agency</p>
             </div>
+          </div>
+          <a
+            href="#contact"
+            className="rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors"
+          >
+            Contact Now
+          </a>
         </div>
       </header>
 
-      <main className="flex-grow pt-40 px-4 md:px-8 container mx-auto">
-        <div className="text-center mb-12 space-y-4">
-            <h1 className="font-heading text-5xl md:text-8xl font-black uppercase tracking-tighter text-white leading-[0.9]">
-                Extract <span className="text-primary">Thumbnails</span> <br/>
-                <span className="text-transparent stroke-text opacity-50">Instantly</span>
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto font-mono text-sm tracking-wide">
-                High-resolution extraction tool for content creators. No ads. No fluff.
-            </p>
-        </div>
-
-        <HeroInput onSearch={handleSearch} loading={loading} />
-
-        {data && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-accordion-down" data-testid="results-grid">
-                <QualityCard 
-                    label="MAX RES" 
-                    res="1280x720 (HD)" 
-                    url={data.thumbnails.maxres} 
-                    isHero={true} 
-                />
-                <QualityCard label="HIGH" res="480x360" url={data.thumbnails.hq} />
-                <QualityCard label="STANDARD" res="640x480" url={data.thumbnails.sd} />
-                <QualityCard label="MEDIUM" res="320x180" url={data.thumbnails.mq} />
-                <QualityCard label="DEFAULT" res="120x90" url={data.thumbnails.default} />
+      <main>
+        <section className="container mx-auto px-4 pb-16 pt-20 md:px-8 md:pb-24 md:pt-28">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div>
+              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-primary">Welcome to Studio Music World</p>
+              <h1 className="text-4xl font-black leading-tight text-white md:text-6xl normal-case tracking-tight">
+                Build a Powerful Digital Presence for Your Music Brand
+              </h1>
+              <p className="mt-6 max-w-xl text-base text-muted-foreground md:text-lg normal-case tracking-normal leading-relaxed">
+                We create modern websites and performance marketing systems inspired by top industry standards,
+                helping artists, studios, and music businesses grow faster online.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <a
+                  href="#services"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-white hover:bg-primary/90 transition-colors"
+                >
+                  Explore Services <ArrowRight className="h-4 w-4" />
+                </a>
+                <a
+                  href="#contact"
+                  className="rounded-full border border-white/20 px-6 py-3 font-semibold text-white hover:border-white/50 transition-colors"
+                >
+                  Get a Quote
+                </a>
+              </div>
             </div>
-        )}
 
-        {!data && !loading && (
-             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 opacity-30 pointer-events-none select-none">
-                <div className="aspect-video border border-dashed border-white/20 flex items-center justify-center">
-                    <ImageIcon className="w-12 h-12 text-white/20" />
+            <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-primary/20 via-black to-black p-8 shadow-2xl">
+              <h2 className="text-2xl font-bold normal-case tracking-normal">Why brands choose us</h2>
+              <ul className="mt-6 space-y-4">
+                {highlights.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary" />
+                    <span className="text-muted-foreground normal-case tracking-normal">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="services" className="border-y border-white/10 bg-white/[0.02] py-16 md:py-24">
+          <div className="container mx-auto px-4 md:px-8">
+            <div className="mb-10 max-w-2xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Our Services</p>
+              <h2 className="mt-3 text-3xl font-black md:text-5xl normal-case tracking-tight">Everything your music business needs</h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              {services.map((service) => (
+                <ServiceCard key={service.title} {...service} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="container mx-auto px-4 py-16 md:px-8 md:py-24">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center">
+                <p className="text-4xl font-black text-primary normal-case tracking-tight">{stat.value}</p>
+                <p className="mt-2 text-sm text-muted-foreground normal-case tracking-normal">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="contact" className="border-t border-white/10 py-16 md:py-20">
+          <div className="container mx-auto px-4 md:px-8">
+            <div className="rounded-3xl border border-primary/40 bg-primary/10 p-8 md:p-12">
+              <h2 className="text-3xl font-black md:text-5xl normal-case tracking-tight">Let’s create your next music website</h2>
+              <p className="mt-4 max-w-2xl text-muted-foreground normal-case tracking-normal">
+                Share your goals and our team will help you plan a complete website and digital growth strategy.
+              </p>
+              <div className="mt-8 grid gap-4 md:grid-cols-3">
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3">
+                  <Mail className="h-5 w-5 text-primary" />
+                  <span className="normal-case tracking-normal">hello@studiomusicworld.com</span>
                 </div>
-                <div className="aspect-video border border-dashed border-white/20 flex items-center justify-center">
-                    <ImageIcon className="w-12 h-12 text-white/20" />
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3">
+                  <Phone className="h-5 w-5 text-primary" />
+                  <span className="normal-case tracking-normal">+91 90000 00000</span>
                 </div>
-                <div className="aspect-video border border-dashed border-white/20 flex items-center justify-center">
-                    <ImageIcon className="w-12 h-12 text-white/20" />
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <span className="normal-case tracking-normal">India</span>
                 </div>
-             </div>
-        )}
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-
-      <Footer />
-      
-      <style>{`
-        .stroke-text {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-        }
-      `}</style>
     </div>
   );
 }

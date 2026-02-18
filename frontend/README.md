@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# Studio Music World Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Prerequisites
+- Node.js 20+ (LTS recommended)
+- npm 10+
 
-## Available Scripts
+## 1) Install dependencies (including CRACO)
+Run from `frontend/`:
 
-In the project directory, you can run:
+```bash
+npm install
+```
 
-### `npm start`
+`@craco/craco` is already declared in `devDependencies`, so a successful install places the binary at `node_modules/.bin/craco` and enables:
+- `npm start` → `craco start`
+- `npm run build` → `craco build`
+- `npm test` → `craco test`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+If you see `craco: not found`, it means install did not complete or `node_modules` is missing.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 2) Resolve `date-fns` and `react-day-picker` conflict
+`react-day-picker@8.10.1` supports `date-fns` v2/v3, not v4. This project pins:
 
-### `npm test`
+- `date-fns: ^3.6.0`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+After pulling latest changes, reinstall:
 
-### `npm run build`
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 3) Fix npm 403 / proxy issues
+A 403 from npm registry is usually from proxy/auth policy, not your code.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Check active npm proxy/registry config:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm config get registry
+npm config get proxy
+npm config get https-proxy
+```
 
-### `npm run eject`
+If you are on an unrestricted network, clear proxy overrides and retry:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm config delete proxy
+npm config delete https-proxy
+npm install
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+If you are in a corporate network, use your approved registry/token instead:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm config set registry https://<your-company-registry>/
+npm config set // <your-company-registry>/:_authToken <TOKEN>
+npm install
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 4) Run frontend server
 
-## Learn More
+```bash
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Open `http://127.0.0.1:3000` (or `http://localhost:3000`).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 5) Build frontend
 
-### Code Splitting
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## Backend test dependency note
+From repo root, create/activate a virtual environment and install backend requirements before running pytest:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+pytest -q
+```
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This installs `requests`, which is required by `backend_test.py`.
